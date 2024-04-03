@@ -28,7 +28,7 @@ class PedidoModel {
             query += ` LIMIT ${offset}, ${limit}`;
         }
         const [rows] = await connection.query(query)
-        connection.end();
+        await connection.end();
 
         return rows;
     }
@@ -36,7 +36,7 @@ class PedidoModel {
     static async getById(id) {
         const connection = await db.createConnection();
         const [rows] = await connection.execute("SELECT id_pedido, id_cliente, tipo_pedido, cantidad, fecha_pedido, ubicacion_entrega, deleted, created_at, updated_at, deleted_at FROM pedido WHERE id_pedido = ? AND deleted = 0", [id]);
-        connection.end();
+        await connection.end();
 
         if (rows.length > 0) {
             const row = rows[0];
@@ -51,21 +51,21 @@ class PedidoModel {
 
         const deletedAt = new Date();
         const [result] = connection.execute("UPDATE pedido SET deleted = 1, deletedAt = ? WHERE id = ?", [deletedAt, id]);
-        connection.end();
+        await connection.end();
         return result;
     }
 
     static async count() {
         const connection = await db.createConnection();
         const [rows] = await connection.query("SELECT COUNT(*) as count FROM pedido WHERE deleted = 0");
-        connection.end();
+        await connection.end();
         return rows[0].count;
     }
 
     async save() {
         const connection = await db.createConnection();
         const [result] = await connection.execute("INSERT INTO pedido (id_cliente, tipo_pedido, cantidad, fecha_pedido, ubicacion_entrega) VALUES (?, ?, ?, ?, ?)", [this.idCliente, this.tipo_pedido, this.cantidad, this.fecha_pedido, this.ubicacion_entrega]);
-        connection.end();
+        await connection.end();
         return result;
     }
 
@@ -73,7 +73,7 @@ class PedidoModel {
         const connection = await db.createConnection();
         const updatedAt = new Date();
         const [result] = await connection.execute("UPDATE pedido SET id_cliente = ?, tipo_pedido = ?, cantidad = ?, fecha_pedido = ?, ubicacion_entrega = ?, updated_at = ? WHERE id = ?", [this.idCliente, this.tipo_pedido, this.cantidad, this.fecha_pedido, this.ubicacion_entrega, updatedAt, this.id]);
-        connection.end();
+        await connection.end();
         return result;
     }
 
@@ -89,7 +89,7 @@ class PedidoModel {
             query += ` LIMIT ${offset}, ${limit}`;
         }
         const [rows] = await connection.query(query)
-        connection.end();
+        await connection.end();
 
         return rows;
     }

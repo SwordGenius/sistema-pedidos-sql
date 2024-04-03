@@ -26,7 +26,7 @@ class ResenaModel {
             query += ` LIMIT ${offset}, ${limit}`;
         }
         const [rows] = await connection.query(query)
-        connection.end();
+        await connection.end();
 
         return rows;
     }
@@ -34,7 +34,7 @@ class ResenaModel {
     static async getById(id) {
         const connection = await db.createConnection();
         const [rows] = await connection.execute("SELECT id_resena, id_cliente, id_pedido, calificacion, nombre, comentario, deleted, created_at, updated_at, deleted_at FROM resena WHERE id_resena = ? AND deleted = 0", [id]);
-        connection.end();
+        await connection.end();
 
         if (rows.length > 0) {
             const row = rows[0];
@@ -49,21 +49,21 @@ class ResenaModel {
 
         const deletedAt = new Date();
         const [result] = connection.execute("UPDATE resena SET deleted = 1, deletedAt = ? WHERE id = ?", [deletedAt, id]);
-        connection.end();
+        await connection.end();
         return result;
     }
 
     async save() {
         const connection = await db.createConnection();
         const [result] = await connection.execute("INSERT INTO resena (id_cliente, id_pedido, calificacion, nombre, comentario) VALUES (?, ?, ?, ?, ?)", [this.idCliente, this.idPedido, this.calificacion, this.nombre, this.comentario]);
-        connection.end();
+        await connection.end();
         return result;
     }
 
     static async count() {
         const connection = await db.createConnection();
         const [rows] = await connection.query("SELECT COUNT(*) AS total FROM resena WHERE deleted = 0");
-        connection.end();
+        await connection.end();
         return rows[0].total;
     }
 
@@ -71,7 +71,7 @@ class ResenaModel {
         const connection = await db.createConnection();
         const updatedAt = new Date();
         const [result] = await connection.execute("UPDATE resena SET calificacion = ?, nombre = ?, comentario = ?, updated_at = ? WHERE id = ?", [ this.calificacion, this.nombre, this.comentario, updatedAt, this.id]);
-        connection.end();
+        await connection.end();
         return result;
     }
 }
