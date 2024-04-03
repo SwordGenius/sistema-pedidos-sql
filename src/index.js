@@ -23,3 +23,9 @@ app.use('/cliente', clientRoutes);
 app.use('/pedido', pedidoRoutes);
 app.use('/resena', resenaRoutes);
 app.use('/auth', authRoutes);
+
+// Starting the server
+
+app.listen(app.get('port'), () => {
+    console.log(`Server on port ${app.get('port')}`);
+}
